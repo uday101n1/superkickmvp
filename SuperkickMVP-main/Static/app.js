@@ -1,4 +1,5 @@
 // Initialize the form and container
+//Initialze
 const form = document.getElementById("submitForm");
 const cardsContainer = document.getElementById("cardsContainer");
 let currentSubmissionId = null;
