@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A sample project for demonstrating HTML structure">
+    <title>Sample Project</title>
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<!--button style starts-->
+	<style>
+       /* body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        } */
+       /* .btn-open-popup {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: green;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-open-popup:hover {
+            background-color: #4caf50;
+        }*/
+
+        .overlay-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay-container.show {
+    display: flex;
+    opacity: 1;
+}
+
+
+        .popup-box {
+            background: #ffdd40;
+            padding: 24px;
+            border-radius:0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            width: 320px;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #444;
+            text-align: left;
+        }
+
+        .form-input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-submit,
+        .btn-close-popup {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-submit {
+            background: var(--dark);
+            color: var(--yellow);
+    
+        }
+
+        .btn-close-popup {
+            margin-top: 12px;
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-submit:hover{color: var(--dark);
+            background: var(--yellow);
+            border: #444;
+            border-style: ridge;
+
+        }
+        .btn-close-popup:hover {
+            background-color: #4caf50;
+        }
+
+        /* Keyframes for fadeInUp animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation for popup */
+        .overlay-container.show {
+            display: flex;
+            opacity: 1;
+        }
+    </style> <!--button style ends-->
+</head>
+<body>
+
+<header class="navbar">
+        <div class="navbar-brand">
+            <a href="#"><img src="{{ url_for('static', filename='logo.png') }}" alt="Product Logo" class="navbar-logo"></a>
+            <a href="#" class="navbar-title">Superkick<span>.</span></a>
+        </div>
+</header>
+    
+<div class="post-box">
+        <form class="post-form" id="submitForm">
+            <label class="form-label" for="name">Name</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="Your name" required>
+    
+            <label class="form-label" for="iam">I am</label>
+            <input class="form-input" type="text" id="iam" name="iam" placeholder="What are you up to?" required>
+    
+            <label class="form-label" for="lookingFor">looking for someone</label>
+            <input class="form-input" type="text" id="lookingFor" name="lookingFor" placeholder="What do you want them for?" required>
+    
+            <label class="form-label" for="email">e-mail id</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="We'll share the responder's contact to this email ID" required>
+    
+            <button type="submit" class="btn-submit">Post</button>
+        </form>
+</div>
+<ul id="cardsContainer"></ul>    
+<!--<div class="content">
+
+   <ul class="team">
+		<li class="member co-funder">
+			<div class="thumb"><img src="https://assets.codepen.io/3/internal/avatars/users/default.png?fit=crop&format=auto&height=120&width=120"></div>
+			<div class="description">
+				<h3>Chris Coyier</h3>
+				<p>I am <strong></strong>, looking for someone<strong></strong><br><button class="btn-open-popup" onclick="togglePopup()">Join them</button></p>
+			</div>
+		</li>
+		<li class="member co-funder">
+			<div class="thumb"><img src="https://assets.codepen.io/2/internal/avatars/users/default.png?height=120&width=120"></div>
+			<div class="description">
+				<h3>Alex Vazquez</h3>
+				<p>I am <strong></strong>, looking for someone<strong></strong><br><button class="btn-open-popup" onclick="togglePopup()">Join them</button></p>
+			</div>
+		</li>
+		<li class="member">
+			<div class="thumb"><img src="https://assets.codepen.io/652/internal/avatars/users/default.png?height=120&width=120"></div>
+			<div class="description">
+				<h3>Marie Mosley</h3>
+				<p>Marie wears a lot of hats. She is our documentation lead, customer support maestra, editor, and community manager.<br><a href="joinme_button.html">Join them</a></p>
+			</div>
+		</li>
+		<li class="member">
+			<div class="thumb"><img src="https://assets.codepen.io/39255/internal/avatars/users/default.png?height=120&width=120"></div>
+			<div class="description">
+				<h3>Stephen Shaw</h3>
+				<p>Stephen is a designer/developer residing in Houston. He likes to build animations with CSS & JavaScript.<br><a href="https://codepen.io/shshaw/">Join them</a></p>
+			</div>
+		</li>
+		<li class="member">
+			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-rachelsmith-6878ca76a1d9200e6c296e810050b8cb.jpg?height=120&width=120"></div>
+			<div class="description">
+				<h3>Rachel Smith</h3>
+				<p>Rachel is a full stack'er in Australia. Not only a creative and talented designer and developer, but a great technical writer.<br><a href="https://codepen.io/rachsmith/">Join them</a></p>
+			</div>
+		</li>
+		<li class="member">
+			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-robertkieffer-77c28f3a6efe082fd1903affae540b8a.jpg?height=120"></div>
+			<div class="description">
+				<h3>Robert Kieffer</h3>
+				<p>Robert is a full-stack dev with a penchant for open-source work. He dwells in the murky depthsmurky depths of JS.<br><a href="https://codepen.io/broofa/">Join them</a></p>
+			</div>
+		</li>
+		<li class="member">
+			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-deevazquez-c8e8b7f9e803f462b7be19ea60b9272f.jpg?height=120&width=120"></div>
+			<div class="description">
+				<h3>Dee Vazquez</h3>
+				<p>Dee is a full stack developer who started her career in finance. She can jump from Rails to React to Go, and also manage our finances.<br><a href="https://codepen.io/deequez/">Join them</a></p>
+			</div>
+		</li>-->
+	</ul>
+
+</div>
+<div id="popup" style="display:none;">
+<div id="popupOverlay" 
+         class="overlay-container">
+        <div class="popup-box">
+            <form class="form-container" id="joinForm">
+                <label class="form-label" for="joinName">
+                  Name:
+                  </label>
+                <input class="form-input" type="text" placeholder="Name" id="joinName" name="name" required>
+                <label class="form-label"for="joinSocial"> Social handle:</label>
+                <input class="form-input" type="text" 
+                       placeholder="Your instagram or snapchat handle" 
+                       id="joinSocial" name="insta" required>
+
+                <label class="form-label" for="joinEmail">Email:</label>
+                <input class="form-input"
+                       type="email" 
+                       placeholder="Enter Your Email"
+                       id="joinEmail" 
+                       name="email" required>
+                
+                
+
+                <button class="btn-submit" id="joinSubmit" 
+                        type="submit">
+                  Submit
+                  </button>
+            </form>
+
+            <button class="btn-close-popup" 
+                    onclick="closePopup()">
+              Close
+              </button>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script>
+	function togglePopup() {
+		const overlay = document.getElementById('popupOverlay');
+		overlay.classList.toggle('show');
+	}
+    document.querySelector('.post-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Your post has been submitted!');
+});
+
+</script>
+</body>
+</html>
